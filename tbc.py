@@ -1,3 +1,5 @@
+import random
+
 class Character(object):
     def __init__(self, name = "Damian",
                  hitPoints = 15,
@@ -54,15 +56,68 @@ class Character(object):
         self.__armor = value
 
     def printStats(self):
-        print(f"{name}")
-        print(f"{hitPoints}")
-        print(f"{hitChance}")
-        print(f"{maxDamage}")
-        print(f"{armor}")
+        print(f"""
+        Name : {self.name}
+        Health : {self.hitPoints}
+        Hit Chance : {self.hitChance}
+        Max Damage : {self.maxDamage}
+        Armor : {self.armor}
+        """)
+        
+    def hit(self, enemy):
+        if random.randint(1, 100) < self.hitChance:
+            print (f"{self.name} hits {enemy.name}...")
+            damage = random.randint(1, self.maxDamage)
+            print (f" for {damage} points of damage...")
+            damage -= enemy.armor
+            if damage < 0:
+                damage = 0
+            if enemy.armor > 0:
+                print(f" but {enemy.name}'s armor absorbed {enemy.armor} points")
+            enemy.hitPoints -= damage
+        else:
+            print(f"{self.name} misses {enemy.name}")
+            
+    def testInt(self, value, min = 0, max = 100, default = 0):
+        out = default
+
+        if type(value) == int:
+            if value >= min:
+                if value <= max:
+                    out = value 
+                else:
+                    print("Too large")
+            else:
+                print("Too small")
+        else:
+            print("Must be an int")
+
+        return out
+        
+    def basicFight(player1, player2):
+        keepGoing = True
+        while keepGoing:
+            player1.hit(player2)
+            player2.hit(player1)
+            
+            print(f"{player1.name} HP : {player1.hitPoints}")
+            print(f"{player2.name} HP : {player2.hitPoints}")
+            print()
+            
+            if player1.hitPoints <= 0:
+                print(f"{player1.name} loses")
+                keepGoing = False
+            elif player2.hitPoints <= 0:
+                print(f"{player2.name} loses")
+                keepGoing = False
+                
+            dummy = input("Press <ENTER> for another round")
         
 def main():
     hero = Character()
     hero.name = "Damian"
     hero.printStats()
+    
         
-main()
+if __name__ == "__main__":
+    main()
